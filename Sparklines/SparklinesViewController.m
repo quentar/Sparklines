@@ -160,15 +160,24 @@ const float heartRateMaxLimit = 85;
     self.sparkLineView5.penColor = [UIColor blueColor];
     self.sparkLineView5.penWidth = 3.0f;
     
-    self.sparkLineView6.dataValues = m_heartRateData;
+    //Make SparkLine 6 dynamic
+    self.sparkLineView6.dataValues = [m_heartRateData mutableCopy];
     self.sparkLineView6.labelText = @"Pulse";
     self.sparkLineView6.currentValueColor = darkGreen;
     self.sparkLineView6.currentValueFormat = @"%.0f";
     self.sparkLineView6.penColor = [UIColor redColor];
-    self.sparkLineView6.penWidth = 6.0f;
+    self.sparkLineView6.penWidth = 1.0f;
+    self.sparkLineView6.manualChartRange = 1;
+    self.sparkLineView6.dataMinimum = @42;
+    self.sparkLineView6.dataMaximum = @(3*42);
+    self.sparkLineView6.itemLimit = 100;    //draw just 100 objects no more
+    
+    self.refreshInterval = 0.2;
     
     self.allSparklines = @[self.sparkLineView1, self.sparkLineView2, self.sparkLineView3,
                           self.sparkLineView4, self.sparkLineView5, self.sparkLineView6];
+    
+    [self performSelector:@selector(refreshDynamicLine) withObject:nil afterDelay:_refreshInterval];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -178,6 +187,14 @@ const float heartRateMaxLimit = 85;
     } else {
         return YES;
     }
+}
+
+-(void) refreshDynamicLine {
+    int newRandomValue = 50 + ( arc4random() % (50)); //42 .. 3*42
+    
+    [self.sparkLineView6 addNewItem:[NSNumber numberWithInt:newRandomValue]];
+    
+    [self performSelector:@selector(refreshDynamicLine) withObject:nil afterDelay:_refreshInterval];
 }
 
 // called when the "Show/Hide Range Overlays" button is touched

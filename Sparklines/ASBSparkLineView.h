@@ -97,8 +97,8 @@
 
 @interface ASBSparkLineView : UIView {
 
-@private
-    NSArray *m_dataValues;
+    @private
+    NSMutableArray *m_dataValues;
 
     NSString *m_labelText;
     UIColor *m_labelColour;
@@ -120,7 +120,11 @@
 }
 
 //! Holds the array of \b NSNumber values to display.
-@property (nonatomic, strong) NSArray *dataValues;
+@property (nonatomic, strong) NSMutableArray *dataValues;
+
+//! Item Limit - will remove first objects from data array if the count is more than this, zero means limit is off
+@property (assign) int itemLimit;
+@property (assign) int manualChartRange;
 
 //! The text to be displayed beside the graph data.
 @property (nonatomic, copy) NSString *labelText;
@@ -169,9 +173,9 @@
 @property (nonatomic, copy) NSNumber *rangeOverlayUpperLimit;
 
 //! Minimum data value found (read-only).
-@property (nonatomic, copy, readonly) NSNumber *dataMinimum;
+@property (nonatomic, copy) NSNumber *dataMinimum;
 //! Maximum data value found (read-only).
-@property (nonatomic, copy, readonly) NSNumber *dataMaximum;
+@property (nonatomic, copy) NSNumber *dataMaximum;
 //! The current (last) value of the data series.
 @property (weak, readonly) NSNumber *dataCurrentValue;
 
@@ -204,4 +208,10 @@
  \return The \b id of the created view object.
  */
 - (id)initWithFrame:(CGRect)frame;
+
+/**
+ dynamic data ingest handler - adds new object, chops off the oldest if needed
+ 
+  */
+- (void) addNewItem:(NSNumber*)newObject;
 @end

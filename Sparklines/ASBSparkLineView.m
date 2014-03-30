@@ -75,8 +75,6 @@ static inline float yPlotValue(float maxHeight, float yInc, float val, float min
 @interface ASBSparkLineView()
 
 // redefine these as writable
-@property (nonatomic, copy) NSNumber *dataMinimum;
-@property (nonatomic, copy) NSNumber *dataMaximum;
 
 // private methods
 - (void)setup;
@@ -107,13 +105,31 @@ static inline float yPlotValue(float maxHeight, float yInc, float val, float min
 }
 
 // all the set accessors below are needed to cause a re-display on change
-- (void)setDataValues:(NSArray *)dataValues {
+- (void)setDataValues:(NSMutableArray *)dataValues {
     if (![m_dataValues isEqualToArray:dataValues]) {
         
         m_dataValues = dataValues;
-        [self createDataStatistics];
+        if (self.manualChartRange == 0) {
+            [self createDataStatistics];
+        }
         [self setNeedsDisplay];
     }
+}
+
+/**
+ *  dynamic data ingest handler - adds new object, chops off the oldest if needed
+ *
+ *  @param newObject NUMBER item object
+ */
+- (void) addNewItem:(NSNumber*)newObject {
+
+    [self.dataValues addObject:newObject];
+    
+    if ( (_itemLimit > 0) && (self.dataValues.count > _itemLimit) ) {
+        [self.dataValues removeObjectAtIndex:0];
+        
+    }
+    [self setNeedsDisplay];
 }
 
 - (void)setLabelText:(NSString *)labelText {

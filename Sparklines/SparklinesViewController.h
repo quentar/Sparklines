@@ -42,6 +42,8 @@
 @property (nonatomic, weak) IBOutlet ASBSparkLineView *sparkLineView6;
 @property (nonatomic, strong) NSArray *allSparklines;
 
+@property (assign) float refreshInterval;
+
 -(IBAction)toggleShowOverlays:(id)sender;
 -(IBAction)toggleCurrentValues:(id)sender;
 
